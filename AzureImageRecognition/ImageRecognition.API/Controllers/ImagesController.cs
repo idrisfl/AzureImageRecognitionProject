@@ -1,5 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ImageRecognition.API.Common;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ImageRecognition.API.Controllers
 {
@@ -7,11 +12,32 @@ namespace ImageRecognition.API.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
-        // GET: api/Images
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly AzureConfig azureConfig;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImagesController"/> object.
+        /// </summary>
+        /// <param name="config"></param>
+        public ImagesController(IOptions<AzureConfig> config)
         {
-            return new string[] { "value1", "value2" };
+            this.azureConfig = config.Value;
+        }
+        // GET: api/Images
+        [HttpGet("tags")]
+        public async Task<IActionResult> Get()
+        {
+            var tags = new Dictionary<string, double>();
+            var client = ComputerVisionClientFactory.Authenticate(this.azureConfig.EndPoint, this.azureConfig.SubscriptionKey);
+            const string ANALYZE_URL_IMAGE = "https://moderatorsampleimages.blob.core.windows.net/samples/sample16.png";
+
+
+            var results = await client.TagImageWithHttpMessagesAsync(ANALYZE_URL_IMAGE);
+
+            foreach (var tag in results.Body.Tags)
+            {
+                tags.Add(tag.Name, tag.Confidence);
+            }
+            return this.Ok(tags);
         }
 
         // GET: api/Images/5
