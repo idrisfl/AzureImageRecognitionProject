@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using ImageRecognition.API.Common;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace ImageRecognition.API.Controllers
 {
@@ -7,36 +11,41 @@ namespace ImageRecognition.API.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
-        // GET: api/Images
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly AzureConfig azureConfig;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImagesController"/> object.
+        /// </summary>
+        /// <param name="config"></param>
+        public ImagesController(IOptions<AzureConfig> config)
         {
-            return new string[] { "value1", "value2" };
+            this.azureConfig = config.Value;
         }
 
-        // GET: api/Images/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        /// <summary>
+        /// Retrieves tags by analyzing image content
+        /// </summary>
+        /// <param name="base64Image">The base64 representation of the image</param>
+        /// <returns>A list of tags</returns>
+        [HttpPost("tags")]
+        public async Task<IActionResult> Post([FromBody] string base64Image)
         {
-            return "value";
-        }
 
-        // POST: api/Images
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+            var tags = new List<string>();
+            var client = ComputerVisionClientFactory.Authenticate(this.azureConfig.EndPoint, this.azureConfig.SubscriptionKey);
 
-        // PUT: api/Images/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            byte[] data = System.Convert.FromBase64String(base64Image);
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            using (var memoryStream = new MemoryStream(data))
+            {
+                var results = await client.TagImageInStreamWithHttpMessagesAsync(memoryStream);
+                foreach (var tag in results.Body.Tags)
+                {
+                    tags.Add(tag.Name);
+                }
+            }
+
+            return this.Ok(tags);
         }
     }
 }
