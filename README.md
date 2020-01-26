@@ -4,10 +4,10 @@
 
 End points have been created to 
 
-###identify objects in an image 
-###describe the content of an image 
-###obtain tags of objects present in an image 
-###read text in an image.
+### identify objects in an image 
+### describe the content of an image 
+### obtain tags of objects present in an image 
+### read text in an image.
 
 
 ### Tech Stack
