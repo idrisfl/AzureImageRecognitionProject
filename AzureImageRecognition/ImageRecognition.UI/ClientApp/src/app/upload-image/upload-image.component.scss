@@ -1,0 +1,10 @@
+.container {
+    flex-direction: column;
+    display: flex;
+}
+
+.sub {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
