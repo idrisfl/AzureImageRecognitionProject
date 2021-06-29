@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using ImageRecognition.API.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace ImageRecognition.API.Controllers
 {
@@ -13,45 +13,39 @@ namespace ImageRecognition.API.Controllers
     [ApiController]
     public class ImagesController : ControllerBase
     {
-        private readonly AzureConfig azureConfig;
+        // private readonly AzureConfig azureConfig;
+        IComputerVisionClientFactory computerVisionClientFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImagesController"/> object.
         /// </summary>
         /// <param name="config"></param>
-        public ImagesController(IOptions<AzureConfig> config)
+        public ImagesController(IComputerVisionClientFactory computerVisionClientFactory)
         {
-            this.azureConfig = config.Value;
+            this.computerVisionClientFactory = computerVisionClientFactory;
         }
 
         /// <summary>
         /// Retrieves tags by analyzing image content
         /// </summary>
-        /// <param name="file">The image file sent through the form data</param>
+        /// <param name="file1">The image file sent through the form data</param>
         /// <returns>A list of tags</returns>
         [HttpPost("tags")]
-        public async Task<IActionResult> RetrieveTags([FromForm] IFormFile file1 )
+        public async Task<IActionResult> RetrieveTags([FromForm(Name = "filetest")] IFormFile filetest)
         {
 
-            try
-            {
-                var tags = new List<string>();
-                var client = ComputerVisionClientFactory.Authenticate(this.azureConfig.EndPoint, this.azureConfig.SubscriptionKey);
-                var stream = new MemoryStream();
-                file1.CopyTo(stream);
 
-                var results = await client.TagImageInStreamWithHttpMessagesAsync(stream);
-                foreach (var tag in results.Body.Tags)
-                {
-                    tags.Add(tag.Name);
-                }
 
-                return this.Ok(tags);
-            }
-            catch (System.Exception ex)
+            var client = this.computerVisionClientFactory.CreateClient();
+            var tags = new List<string>();
+
+            var results = await client.TagImageInStreamWithHttpMessagesAsync(filetest.OpenReadStream());
+            foreach (var tag in results.Body.Tags)
             {
-                return this.StatusCode(500, ex);
+                tags.Add(tag.Name);
             }
+
+            return this.Ok(tags);
         }
 
         /// <summary>
@@ -59,32 +53,20 @@ namespace ImageRecognition.API.Controllers
         /// </summary>
         /// <param name="file">The image file sent through the form data</param>
         /// <returns>A list of possible descriptions of the image</returns>
-        [HttpPost("descriptions")]
-        public async Task<IActionResult> RetrieveDescription([FromForm] IFormFile file1)
+        [HttpPost("describe")]
+        public async Task<IActionResult> RetrieveDescription([FromForm(Name = "filetest")] IFormFile filetest)
         {
+            var client = this.computerVisionClientFactory.CreateClient();
 
-            try
+            var descriptions = new List<string>();
+
+            var results = await client.DescribeImageInStreamWithHttpMessagesAsync(filetest.OpenReadStream());
+            foreach (var caption in results.Body.Captions)
             {
-                var client = ComputerVisionClientFactory.Authenticate(this.azureConfig.EndPoint, this.azureConfig.SubscriptionKey);
-                var stream = new MemoryStream();
-                file1.CopyTo(stream);
-
-                var descriptions = new List<string>();
-
-                var results = await client.DescribeImageInStreamWithHttpMessagesAsync(stream);
-                foreach (var caption in results.Body.Captions)
-                {
-                    descriptions.Add($"description:{caption.Text}, confidence level:{caption.Confidence}");
-                }
-
-                return this.Ok(descriptions);
-            }
-            catch (Exception ex)
-            {
-
-                return this.StatusCode(500, ex);
+                descriptions.Add($"Description:{caption.Text}, Confidence Level:{caption.Confidence}");
             }
 
+            return this.Ok(descriptions);
         }
     }
 }
