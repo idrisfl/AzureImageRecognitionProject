@@ -1,7 +1,5 @@
 ﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 
 namespace ImageRecognition.API.Common
 {
@@ -34,6 +32,5 @@ namespace ImageRecognition.API.Common
             };
             return computerVisionClient;
         }
-
     }
 }

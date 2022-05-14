@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using ImageRecognition.API.Common;
+﻿using ImageRecognition.API.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ImageRecognition.API.Controllers
 {
@@ -33,7 +30,10 @@ namespace ImageRecognition.API.Controllers
         [HttpPost("tags")]
         public async Task<IActionResult> RetrieveTags([FromForm(Name = "filetest")] IFormFile filetest)
         {
-
+            if (filetest == null)
+            {
+                return BadRequest("Image file missing");
+            }
 
 
             var client = this.computerVisionClientFactory.CreateClient();
@@ -51,11 +51,16 @@ namespace ImageRecognition.API.Controllers
         /// <summary>
         /// Retrieves description information of the image
         /// </summary>
-        /// <param name="file">The image file sent through the form data</param>
+        /// <param name="filetest">The image file sent through the form data</param>
         /// <returns>A list of possible descriptions of the image</returns>
         [HttpPost("describe")]
         public async Task<IActionResult> RetrieveDescription([FromForm(Name = "filetest")] IFormFile filetest)
         {
+            if (filetest == null)
+            {
+                return BadRequest("Image file missing");
+            }
+
             var client = this.computerVisionClientFactory.CreateClient();
 
             var descriptions = new List<string>();
