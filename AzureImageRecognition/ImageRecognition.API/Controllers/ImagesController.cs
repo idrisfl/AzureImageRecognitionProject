@@ -1,4 +1,5 @@
-﻿using ImageRecognition.API.Common;
+﻿using System;
+using ImageRecognition.API.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -60,18 +61,25 @@ namespace ImageRecognition.API.Controllers
             {
                 return BadRequest("Image file missing");
             }
-
-            var client = this.computerVisionClientFactory.CreateClient();
-
-            var descriptions = new List<string>();
-
-            var results = await client.DescribeImageInStreamWithHttpMessagesAsync(filetest.OpenReadStream());
-            foreach (var caption in results.Body.Captions)
+            
+            try
             {
-                descriptions.Add($"Description:{caption.Text}, Confidence Level:{caption.Confidence}");
-            }
+                var client = this.computerVisionClientFactory.CreateClient();
 
-            return this.Ok(descriptions);
+                var descriptions = new List<string>();
+
+                var results = await client.DescribeImageInStreamWithHttpMessagesAsync(filetest.OpenReadStream());
+                foreach (var caption in results.Body.Captions)
+                {
+                    descriptions.Add($"Description:{caption.Text}, Confidence Level:{caption.Confidence}");
+                }
+
+                return this.Ok(descriptions);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

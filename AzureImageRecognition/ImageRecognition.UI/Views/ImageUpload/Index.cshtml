@@ -1,19 +1,17 @@
-﻿@Model ImageRecognition.UI.Models.ImageResult
-
-<form method="post" enctype="multipart/form-data" action="/ImageUpload/Upload">
+﻿<form method="post" enctype="multipart/form-data" action="/ImageUpload/Upload">
     @{
         ViewData["Title"] = "Image Upload";
     }
 
-    <h1>Image Upload</h1>
-
-    <div class="row mt-2">
-        <div class="col-12">
-            <p>Upload one or more files using this form:</p>
-            <input type="file" name="files" multiple="multiple"/>
+    <h3>Téléchargez un ou plusieurs fichiers</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <input type="file" name="files" multiple="multiple"/>
+            </div>
+            <div class="col">
+                <input type="submit" value="Soumettre" />
+            </div>
         </div>
-    </div>
-    <div>
-        <input type="submit" value="Upload"/>
     </div>
 </form>

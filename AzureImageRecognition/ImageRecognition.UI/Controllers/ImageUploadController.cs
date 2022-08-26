@@ -29,15 +29,14 @@ namespace ImageRecognition.UI.Controllers
 
             try
             {
-
-                var imageResult = new ImageResult();
+                var imageResult = new List<ImageResult>();
 
                 foreach (var file in files.Where(f => f.Length > 0))
                 {
                     using var ms = new MemoryStream();
                     await file.CopyToAsync(ms);
                     var byteArrayContent = ms.ToArray();
-                    ByteArrayContent byteContent = new ByteArrayContent(byteArrayContent);
+                    ByteArrayContent byteContent = new(byteArrayContent);
                     var multipartContent = new MultipartFormDataContent();
                     multipartContent.Add(byteContent, "filetest", "filename");
 
@@ -45,20 +44,34 @@ namespace ImageRecognition.UI.Controllers
                     var responseContent = await response.Content.ReadAsStringAsync();
                     resultOriginal.Add(responseContent);
 
-
                     var content = new StringContent(JsonConvert.SerializeObject(responseContent), Encoding.UTF8, "application/json");
                     var finalResponse = await _httpClient.PostAsync("/api/translation/translate", content);
                     var finalResponseContent = await finalResponse.Content.ReadAsStringAsync();
                     translatedResult.Add(finalResponseContent);
-                    imageResult.ImageDescriptions.Add(finalResponseContent);
+
+                    var result = ParseResultOnly<IEnumerable<TranslatedResult>>(finalResponseContent);
+
+                    var fileResult = new ImageResult
+                    {
+                        ImageDescription = result.First().Translations.First().Text,
+                        Base64ImageString = Convert.ToBase64String(byteArrayContent, Base64FormattingOptions.None)
+                    };
+                    imageResult.Add(fileResult);
                 }
+                return View("Result", imageResult);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                return View("Index");
             }
+        }
 
-            return View("Result", new ImageResult { ImageDescriptions = translatedResult });
+        private static T ParseResultOnly<T>(string content)
+        {
+            var result = JsonConvert.DeserializeObject<T>(content);
+
+            return result;
         }
     }
 }

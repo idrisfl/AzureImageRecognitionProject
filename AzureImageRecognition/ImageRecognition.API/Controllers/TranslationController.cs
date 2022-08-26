@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using ImageRecognition.API.Common;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 
 namespace ImageRecognition.API.Controllers
 {
@@ -15,10 +12,10 @@ namespace ImageRecognition.API.Controllers
     [ApiController]
     public class TranslationController : ControllerBase
     {
-        private readonly AzureConfig azureConfig;
         private readonly string _key;
         private readonly string _translatorEndpoint;
         private readonly string _location;
+        private const string route = "/translate?api-version=3.0&from=en&to=fr";
 
         public TranslationController(IOptions<AzureConfig> config)
         {
@@ -33,8 +30,7 @@ namespace ImageRecognition.API.Controllers
             try
             {
                 using var client = new HttpClient();
-                using var request = new HttpRequestMessage();
-                string route = "/translate?api-version=3.0&from=en&to=fr";
+                using var request = new HttpRequestMessage();                
                 object[] body = new object[] { new { Text = text } };
                 var requestBody = JsonConvert.SerializeObject(body);
 

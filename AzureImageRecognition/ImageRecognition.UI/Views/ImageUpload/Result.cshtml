@@ -1,6 +1,20 @@
-﻿@Model ImageRecognition.UI.Models.ImageResult
+﻿@*@Model List<ImageRecognition.UI.Models.ImageResult>*@
 
-@foreach (var result in Model.ImageDescriptions)
-{
-    <div>@result</div>
+@{
+    ViewData["Title"] = "Image Result";
 }
+
+<div class="container">
+
+@foreach (var result in Model)
+{
+        <div class="row">
+            <div class="col p-3">
+                <img src="data:image/png;base64,@result.Base64ImageString" class="img-fluid img-thumbnail" alt="original">
+            </div>
+            <div class="col p-3">
+                <div style="padding: 10px; margin: 10px;color: blue">@result.ImageDescription</div>
+            </div>
+        </div>
+}
+</div>
