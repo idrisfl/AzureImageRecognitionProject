@@ -2,15 +2,16 @@
     @{
         ViewData["Title"] = "Image Upload";
     }
-
-    <h3>Téléchargez un ou plusieurs fichiers</h3>
     <div class="container">
-        <div class="row">
+        <div class="row p-2">
+            <p class="lead">Générer une description de l’intégralité d’une image dans un langage lisible utilisant des phrases complètes.</p>
+        </div>
+        <div class="row p-5">
             <div class="col">
-                <input type="file" name="files" multiple="multiple"/>
+                <input type="file" name="files" multiple="multiple" class="btn btn-outline-primary" />
             </div>
             <div class="col">
-                <input type="submit" value="Soumettre" />
+                <input type="submit" value="Soumettre" class="btn btn-primary" />
             </div>
         </div>
     </div>

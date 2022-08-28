@@ -7,13 +7,13 @@ namespace ImageRecognition.UI.Controllers
 {
     public class ImageUploadController : Controller
     {
-        private readonly string _imageRecogntionApiBaseUrl;
+        private readonly string _imageRecognitionApiBaseUrl;
         private readonly HttpClient _httpClient;
 
         public ImageUploadController(IConfiguration config)
         {
-            _imageRecogntionApiBaseUrl = config.GetValue<string>("ImageRecognitionAPIBaseUrl");
-            _httpClient = new HttpClient { BaseAddress = new Uri(_imageRecogntionApiBaseUrl)  };
+            _imageRecognitionApiBaseUrl = config.GetValue<string>("ImageRecognitionAPIBaseUrl");
+            _httpClient = new HttpClient { BaseAddress = new Uri(_imageRecognitionApiBaseUrl)  };
         }
         
         public IActionResult Index()
@@ -37,8 +37,10 @@ namespace ImageRecognition.UI.Controllers
                     await file.CopyToAsync(ms);
                     var byteArrayContent = ms.ToArray();
                     ByteArrayContent byteContent = new(byteArrayContent);
-                    var multipartContent = new MultipartFormDataContent();
-                    multipartContent.Add(byteContent, "filetest", "filename");
+                    var multipartContent = new MultipartFormDataContent
+                    {
+                        { byteContent, "filetest", "filename" }
+                    };
 
                     var response = await _httpClient.PostAsync("/api/images/describe",  multipartContent);
                     var responseContent = await response.Content.ReadAsStringAsync();
