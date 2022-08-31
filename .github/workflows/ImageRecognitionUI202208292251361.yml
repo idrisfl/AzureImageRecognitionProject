@@ -8,7 +8,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: ImageRecognition.API/published
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: ImageRecognition.API
+  WORKING_DIRECTORY: AzureImageRecognition/ImageRecognition.API
 jobs:
   build:
     runs-on: ubuntu-latest
