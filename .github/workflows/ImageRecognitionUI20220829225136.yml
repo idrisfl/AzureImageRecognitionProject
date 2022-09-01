@@ -1,10 +1,10 @@
-name: Build and deploy .NET Core application to Web App ImageRecognitionUI20220829225136
+name: Build and deploy .NET Core application to Web App ImageRecognitionUI20220829225136UI
 on:
   push:
     branches:
     - feature/20220514
 env:
-  AZURE_WEBAPP_NAME: ImageRecognitionUI20220829225136
+  AZURE_WEBAPP_NAME: ImageRecognitionUI20220829225136UI
   AZURE_WEBAPP_PACKAGE_PATH: ImageRecognition.UI/publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
