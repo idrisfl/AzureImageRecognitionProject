@@ -1,27 +1,23 @@
-name: Build and deploy .NET Core application to Web App ImageRecognitionUI20220829225136UI
+name: Build and deploy .NET Core application to Web App ImageRecognitionUI
 on:
   push:
     branches:
     - feature/20220514
 env:
-  AZURE_WEBAPP_NAME: ImageRecognitionUI20220829225136UI
-  AZURE_WEBAPP_PACKAGE_PATH: ImageRecognition.UI/publish
+  AZURE_WEBAPP_NAME: ImageRecognitionUI
+  AZURE_WEBAPP_PACKAGE_PATH: ImageRecognition.UI\publish
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 6.0.x
-  WORKING_DIRECTORY: AzureImageRecognition/ImageRecognition.UI
+  WORKING_DIRECTORY: ImageRecognition.UI
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
-    - name: Run shell command
-      run: |
-        echo ${{ env.WORKING_DIRECTORY }}
-        ls -LR
     - name: Restore
       run: dotnet restore "${{ env.WORKING_DIRECTORY }}"
     - name: Build
@@ -34,7 +30,7 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.ImageRecognitionUI20220829225136_FFFF }}
+        publish-profile: ${{ secrets.ImageRecognitionUI_FFFF }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
     - name: Publish Artifacts
       uses: actions/upload-artifact@v1.0.0
