@@ -1,0 +1,18 @@
+﻿<form method="post" enctype="multipart/form-data" action="/ImageUpload/Upload">
+    @{
+        ViewData["Title"] = "Image Upload";
+    }
+    <div class="container">
+        <div class="row p-2">
+            <p class="lead">Générer une description de l’intégralité d’une image dans un langage lisible utilisant des phrases complètes.</p>
+        </div>
+        <div class="row p-5">
+            <div class="col">
+                <input type="file" name="files" multiple="multiple" class="btn btn-outline-primary" />
+            </div>
+            <div class="col">
+                <input type="submit" value="Soumettre" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>

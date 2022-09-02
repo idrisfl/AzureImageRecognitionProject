@@ -1,18 +1,11 @@
 ﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 
 namespace ImageRecognition.API.Common
 {
     public class ComputerVisionClientFactory : IComputerVisionClientFactory
     {
-
         private readonly AzureConfig azureConfig;
-
-        // private ILogger<ComputerVisionClientFactory> logger;
-
-        //private IComputerVisionClient computerVisionClient;
 
         public ComputerVisionClientFactory(IOptions<AzureConfig> config)
         {
@@ -25,8 +18,6 @@ namespace ImageRecognition.API.Common
          */
         public IComputerVisionClient CreateClient()
         {
-            // logger.LogInformation("Creating Client");
-
             var apiKeyServiceClientCredentials = new ApiKeyServiceClientCredentials(this.azureConfig.SubscriptionKey);
             var computerVisionClient = new ComputerVisionClient(apiKeyServiceClientCredentials)
             {
@@ -34,6 +25,5 @@ namespace ImageRecognition.API.Common
             };
             return computerVisionClient;
         }
-
     }
 }
