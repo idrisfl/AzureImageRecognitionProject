@@ -10,20 +10,16 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary order-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark order-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <div class="col">
-                    <img src="~/images/robot-make-technology-logo.png" class="img-thumbnail" alt="make Technology logo" />
-                </div>
                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 font-weight-bold">
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="ImageUpload" asp-action="Index">Describe an image</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="ImageUpload" asp-action="Index">Search document</a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Search" asp-action="Index">Search document</a>
                         </li>
-
                     </ul>
                 </div>
             </div>
@@ -36,9 +32,9 @@
     </div>
 
     <footer class="border-top footer text-center text-lg-start bg-light text-muted">
-        <div class="text-center p-4" style="background-color: rgba(255, 255, 0, 0.05);">
+        <div class="text-center" style="background-color: rgba(255, 255, 0, 0.05);">
             © 2022 Copyright
-            <img src="~/images/mslogo.png" class="img-fluid" alt="microsoft"/>
+            <img src="~/images/mslogo.png" class="img-fluid p-2" alt="microsoft"/>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
