@@ -12,7 +12,7 @@ namespace ImageRecognition.API.Controllers
     public class ImagesController : ControllerBase
     {
         // private readonly AzureConfig azureConfig;
-        IComputerVisionClientFactory computerVisionClientFactory;
+        private readonly IComputerVisionClientFactory _computerVisionClientFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImagesController"/> object.
@@ -20,7 +20,7 @@ namespace ImageRecognition.API.Controllers
         /// <param name="config"></param>
         public ImagesController(IComputerVisionClientFactory computerVisionClientFactory)
         {
-            this.computerVisionClientFactory = computerVisionClientFactory;
+            this._computerVisionClientFactory = computerVisionClientFactory;
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace ImageRecognition.API.Controllers
             }
 
 
-            var client = this.computerVisionClientFactory.CreateClient();
+            var client = this._computerVisionClientFactory.CreateComputerVisionClient();
             var tags = new List<string>();
 
             var results = await client.TagImageInStreamWithHttpMessagesAsync(filetest.OpenReadStream());
@@ -64,7 +64,7 @@ namespace ImageRecognition.API.Controllers
             
             try
             {
-                var client = this.computerVisionClientFactory.CreateClient();
+                var client = this._computerVisionClientFactory.CreateComputerVisionClient();
 
                 var descriptions = new List<string>();
 

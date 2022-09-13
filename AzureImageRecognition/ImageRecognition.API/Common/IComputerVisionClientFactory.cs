@@ -1,9 +1,12 @@
 ﻿using Microsoft.Azure.CognitiveServices.Vision.ComputerVision;
+using Microsoft.Azure.CognitiveServices.Vision.Face;
 
 namespace ImageRecognition.API.Common
 {
     public interface IComputerVisionClientFactory
     {
-        IComputerVisionClient CreateClient();
+        IComputerVisionClient CreateComputerVisionClient();
+
+        IFaceClient CreateFaceClient();
     }
 }
